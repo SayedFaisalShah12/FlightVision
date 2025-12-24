@@ -6,11 +6,11 @@ from utils import haversine
 from prediction import predict_landing_time
 
 st.set_page_config(
-    page_title="AI Flight Predictor",
+    page_title="FlightVision",
     layout="wide"
 )
 
-st.title("✈️ AI Flight Landing Prediction System")
+st.title("✈️ FlightVision")
 
 st.write(
     "This system tracks live aircraft positions and predicts landing time "
@@ -82,12 +82,12 @@ else:
 # Map visualization
 if not df.empty:
     st.subheader("🗺️ Live Aircraft Positions")
+
     map_df = df.rename(
-    columns={
-        "Latitude": "latitude",
-        "Longitude": "longitude"
-    }
-)
+        columns={
+            "Latitude": "latitude",
+            "Longitude": "longitude"
+        }
+    )
 
-st.map(map_df[["latitude", "longitude"]])
-
+    st.map(map_df[["latitude", "longitude"]])
