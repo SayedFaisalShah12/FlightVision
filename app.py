@@ -18,7 +18,6 @@ for flight in flights:
     arrival = flight.get("arrival")
     flight_info = flight.get("flight", {})
 
-    # Check live data first (most reliable)
     if live and live.get("latitude") and live.get("longitude"):
         lat1 = live["latitude"]
         lon1 = live["longitude"]
@@ -27,13 +26,12 @@ for flight in flights:
         distance = None
         eta = None
 
-        # Arrival latitude/longitude often missing in AviationStack
-        if arrival and arrival.get("latitude") and arrival.get("longitude"):
-            lat2 = float(arrival["latitude"])
-            lon2 = float(arrival["longitude"])
+        if arrival and arrival.get("iata"):
+            lat2, lon2 = get_airport_coordinates(arrival["iata"])
 
-            distance = haversine(lat1, lon1, lat2, lon2)
-            eta = predict_landing_time(distance, speed)
+            if lat2 and lon2:
+                distance = haversine(lat1, lon1, lat2, lon2)
+                eta = predict_landing_time(distance, speed)
 
         rows.append({
             "Flight": flight_info.get("iata", "N/A"),
