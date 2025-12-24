@@ -113,11 +113,15 @@ else:
 # Map visualization
 if not df.empty:
     st.subheader("🗺️ Live Aircraft Positions")
+    
+    # Create a temporary DataFrame with correct column names for Streamlit map
     map_df = df.rename(columns={
-    "Latitude": "latitude",
-    "Longitude": "longitude"
-})
-st.map(map_df[["latitude", "longitude"]])
+        "Latitude": "latitude",
+        "Longitude": "longitude"
+    })
+    
+    st.map(map_df[["latitude", "longitude"]])
+
 
     
 
