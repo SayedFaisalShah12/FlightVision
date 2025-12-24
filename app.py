@@ -88,6 +88,8 @@ if not df.empty and df["ETA (minutes)"].notna().any():
     )
 else:
     st.warning("⚠️ ETA prediction unavailable for current flights.")
+    st.write("DEBUG arrival IATA:", arrival.get("iata") if arrival else None)
+
 
 # Map visualization
 if not df.empty:
@@ -96,4 +98,5 @@ if not df.empty:
     columns={"Latitude": "latitude", "Longitude": "longitude"}
     )
     st.map(map_df[["latitude", "longitude"]])
+    
 
