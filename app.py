@@ -113,9 +113,11 @@ else:
 # Map visualization
 if not df.empty:
     st.subheader("🗺️ Live Aircraft Positions")
-    map_df = df.rename(
-    columns={"Latitude": "latitude", "Longitude": "longitude"}
-    )
-    st.map(map_df[["latitude", "longitude"]])
+    map_df = df.rename(columns={
+    "Latitude": "latitude",
+    "Longitude": "longitude"
+})
+st.map(map_df[["latitude", "longitude"]])
+
     
 
