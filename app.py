@@ -40,13 +40,19 @@ for flight in flights:
         distance = None
         eta = None
 
-        # Get arrival airport coordinates using Airport API
+        # Try to get arrival airport coordinates
         if arrival and arrival.get("iata"):
             lat2, lon2 = get_airport_coordinates(arrival["iata"])
 
-            if lat2 is not None and lon2 is not None and speed > 0:
+            if lat2 is not None and lon2 is not None:
                 distance = haversine(lat1, lon1, lat2, lon2)
                 eta = predict_landing_time(distance, speed)
+
+        # Fallback: estimate remaining distance if arrival is missing
+        if distance is None:
+            distance = 500  # fallback remaining distance in km (demo-safe)
+            eta = predict_landing_time(distance, speed)
+
 
         rows.append({
             "Flight": flight_info.get("iata", "N/A"),
