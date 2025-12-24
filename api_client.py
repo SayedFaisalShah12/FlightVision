@@ -1,27 +1,42 @@
 import requests
 from config import API_KEY
 
-BASE_URL = "https://api.aviationstack.com/v1/flights"
+FLIGHTS_URL = "https://api.aviationstack.com/v1/flights"
+AIRPORTS_URL = "https://api.aviationstack.com/v1/airports"
+
 
 def get_live_flights(limit=5):
+    """
+    Fetch real-time flight data
+    """
     params = {
         "access_key": API_KEY,
         "limit": limit
     }
-    response = requests.get(BASE_URL, params=params)
-    return response.json()["data"]
+
+    response = requests.get(FLIGHTS_URL, params=params)
+    response.raise_for_status()
+    return response.json().get("data", [])
+
 
 def get_airport_coordinates(iata_code):
-    url = "https://api.aviationstack.com/v1/airports"
+    """
+    Fetch latitude & longitude of an airport using IATA code
+    """
     params = {
         "access_key": API_KEY,
         "iata_code": iata_code
     }
 
-    response = requests.get(url)
+    response = requests.get(AIRPORTS_URL, params=params)
+    response.raise_for_status()
     data = response.json().get("data", [])
 
     if data:
-        return float(data[0]["latitude"]), float(data[0]["longitude"])
+        lat = data[0].get("latitude")
+        lon = data[0].get("longitude")
+
+        if lat is not None and lon is not None:
+            return float(lat), float(lon)
 
     return None, None
