@@ -81,16 +81,33 @@ df = pd.DataFrame(
 st.subheader("📊 Live Flight Data")
 st.dataframe(df, use_container_width=True)
 
-# ETA Graph
-if not df.empty and df["ETA (minutes)"].notna().any():
-    st.subheader("📈 Estimated Time of Arrival (ETA)")
-    st.bar_chart(
-        df.dropna(subset=["ETA (minutes)"])
-          .set_index("Flight")["ETA (minutes)"]
+
+def calculate_eta_km(lat1, lon1, lat2, lon2, speed_kmh=850):
+    R = 6371
+    dlat = math.radians(lat2 - lat1)
+    dlon = math.radians(lon2 - lon1)
+    a = math.sin(dlat/2)**2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon/2)**2
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    distance = R * c
+    return int((distance / speed_kmh) * 60)
+
+arrival = flight.get("arrival", {})
+arrival_iata = arrival.get("iata")
+
+st.write("DEBUG arrival IATA:", arrival_iata)
+
+if arrival_iata and arrival_iata in AIRPORT_COORDS:
+    dest = AIRPORT_COORDS[arrival_iata]
+    eta = calculate_eta_km(
+        flight["latitude"],
+        flight["longitude"],
+        dest["lat"],
+        dest["lon"]
     )
+    st.success(f"🕒 Estimated Time to Arrival: {eta} minutes")
 else:
-    st.warning("⚠️ ETA prediction unavailable for current flights.")
-    st.write("DEBUG arrival IATA:", arrival.get("iata") if arrival else None)
+    st.warning("⚠️ ETA prediction unavailable for this destination.")
+
 
 
 # Map visualization
