@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
+import math
 
+from airport_coords import AIRPORT_COORDS
 from api_client import get_live_flights, get_airport_coordinates
 from utils import haversine
 from prediction import predict_landing_time
