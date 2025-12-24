@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from api_client import get_live_flights
+from api_client import get_live_flights, get_airport_coordinates
 from utils import haversine
 from prediction import predict_landing_time
 
