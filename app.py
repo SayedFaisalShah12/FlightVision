@@ -31,7 +31,11 @@ for flight in flights:
     if live and live.get("latitude") and live.get("longitude"):
         lat1 = live["latitude"]
         lon1 = live["longitude"]
-        speed = live.get("speed_horizontal", 0)
+
+        speed = live.get("speed_horizontal")
+
+        if not speed or speed <= 0:
+            speed = 800  # fallback average aircraft speed (km/h)
 
         distance = None
         eta = None
@@ -82,12 +86,5 @@ else:
 # Map visualization
 if not df.empty:
     st.subheader("🗺️ Live Aircraft Positions")
+    st.map(df[["Latitude", "Longitude"]])
 
-    map_df = df.rename(
-        columns={
-            "Latitude": "latitude",
-            "Longitude": "longitude"
-        }
-    )
-
-    st.map(map_df[["latitude", "longitude"]])
