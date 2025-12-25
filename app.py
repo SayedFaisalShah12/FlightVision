@@ -123,7 +123,7 @@ if not df.empty:
 
     st.map(map_df[["latitude", "longitude"]])
 else:
-    st.warning("No flight location data available.")
+    st.warning("No flight location data available.")    
 
 
 
