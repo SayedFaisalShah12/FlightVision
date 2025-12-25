@@ -43,8 +43,9 @@ for flight in flights:
         eta = None
 
         # Try to get arrival airport coordinates
-        if arrival and arrival.get("iata"):
-            lat2, lon2 = get_airport_coordinates(arrival["iata"])
+        if arrival:
+            lat2 = arrival.get("latitude")
+            lon2 = arrival.get("longitude")
 
             if lat2 is not None and lon2 is not None:
                 distance = haversine(lat1, lon1, lat2, lon2)
