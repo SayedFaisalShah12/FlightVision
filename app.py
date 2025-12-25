@@ -110,18 +110,21 @@ else:
     st.warning("⚠️ ETA prediction unavailable for this destination.")
 
 
-
 # Map visualization
-if not df.empty:
-    st.subheader("🗺️ Live Aircraft Positions")
-    
-    # Create a temporary DataFrame with correct column names for Streamlit map
-    map_df = df.rename(columns={
-    "Latitude": "latitude",
-    "Longitude": "longitude"
-})
+st.subheader("🗺️ Live Aircraft Positions")
 
-st.map(map_df[["latitude", "longitude"]])
+if not df.empty:
+    map_df = df.rename(
+        columns={
+            "Latitude": "latitude",
+            "Longitude": "longitude"
+        }
+    )
+
+    st.map(map_df[["latitude", "longitude"]])
+else:
+    st.warning("No flight location data available.")
+
 
 
 
