@@ -92,38 +92,40 @@ def calculate_eta_km(lat1, lon1, lat2, lon2, speed_kmh=850):
     distance = R * c
     return int((distance / speed_kmh) * 60)
 
-arrival = flight.get("arrival", {})
-arrival_iata = arrival.get("iata")
-
-st.write("DEBUG arrival IATA:", arrival_iata)
-
-if arrival_iata and arrival_iata in AIRPORT_COORDS:
-    dest = AIRPORT_COORDS[arrival_iata]
-    eta = calculate_eta_km(
-        flight["latitude"],
-        flight["longitude"],
-        dest["lat"],
-        dest["lon"]
-    )
-    st.success(f"🕒 Estimated Time to Arrival: {eta} minutes")
+last_flight = flights[-1] if flights else None
+if last_flight:
+    arrival = last_flight.get("arrival", {})
+    arrival_iata = arrival.get("iata")
+    st.write("DEBUG arrival IATA:", arrival_iata)
+    if arrival_iata and arrival_iata in AIRPORT_COORDS and last_flight.get("live"):
+        dest = AIRPORT_COORDS[arrival_iata]
+        lat1 = last_flight["live"].get("latitude")
+        lon1 = last_flight["live"].get("longitude")
+        if lat1 is not None and lon1 is not None:
+            eta = calculate_eta_km(lat1, lon1, dest["lat"], dest["lon"])
+            st.success(f"🕒 Estimated Time to Arrival: {eta} minutes")
+        else:
+            st.warning("⚠️ Live coordinates unavailable for ETA.")
+    else:
+        st.warning("⚠️ ETA prediction unavailable for this destination.")
 else:
-    st.warning("⚠️ ETA prediction unavailable for this destination.")
+    st.warning("No flights available to estimate ETA.")
 
 
 # Map visualization
 st.subheader("🗺️ Live Aircraft Positions")
 
-if not df.empty:
-    map_df = df.rename(
-        columns={
-            "Latitude": "latitude",
-            "Longitude": "longitude"
-        }
-    )
+map_df = df.rename(
+    columns={
+        "Latitude": "latitude",
+        "Longitude": "longitude"
+    }
+)
 
+if not map_df.empty and "latitude" in map_df.columns and "longitude" in map_df.columns:
     st.map(map_df[["latitude", "longitude"]])
 else:
-    st.warning("No flight location data available.")    
+    st.warning("No flight location data available.")
 
 
 
