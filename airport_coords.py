@@ -6,4 +6,3 @@ AIRPORT_COORDS = {
     "SIN": {"lat": 1.3644, "lon": 103.9915},
 }
 
-st.write("DEBUG airport API response:", data)
